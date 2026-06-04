@@ -1,6 +1,6 @@
 ---
 name: baowen-feed
-description: 拉取 baowen 爆文系统的文章列表。默认走「全量爆文最新」模式（不限赛道，按发布时间倒序）——当用户问「今日爆文 / 今天有什么爆文 / 拿一下爆文」等时触发。当用户明确说「我的订阅 / 我订阅了什么 / 按标签过滤」时加 `--scope mine` 走订阅过滤；当用户说「昨天的爆文」时加 `--since yesterday`；当用户说「按热度 / TOP / 最热」时加 `--sort heat`。可选参数：since（默认 today = Asia/Shanghai 今天 00:00 起；可改 yesterday = 昨天 00:00 起 / 24h = 滚动 24 小时 / 7d / 30d / all），category（限定单赛道，wx 拼音码如 keji / yuer / chuangye），sort（默认 published 按发布时间倒序，可改 heat 按热度），limit（默认 20，最大 50），scope（默认 all，可改 mine 走订阅过滤）。
+description: 拉取 baowen 爆文系统的文章列表。默认走「全量爆文最新」模式（不限赛道，按发布时间倒序）——当用户问「今日爆文 / 今天有什么爆文 / 拿一下爆文」等时触发。当用户明确说「我的订阅 / 我订阅了什么 / 按标签过滤」时加 `--scope mine` 走订阅过滤；当用户说「昨天的爆文」时加 `--since yesterday`；当用户说「按热度 / TOP / 最热」时加 `--sort heat`。since 默认根据 scope 自动选（scope=all → today；scope=mine → 48h，订阅集合稀疏所以放宽窗口）。可选参数：since（today = Asia/Shanghai 今天 00:00 起 / yesterday = 昨天 00:00 起 / 24h = 滚动 24 小时 / 48h / 7d / 30d / all），category（限定单赛道，wx 拼音码如 keji / yuer / chuangye），sort（默认 published 按发布时间倒序，可改 heat 按热度），limit（默认 20，最大 50），scope（默认 all，可改 mine 走订阅过滤）。
 ---
 
 调 baowen API 拿爆文列表，markdown 输出给 AI 阅读 / 总结 / 二次加工。
@@ -29,11 +29,18 @@ bash ~/.claude/skills/baowen-feed/fetch.sh --scope mine [其他参数]
 
 ## 何时用哪种 since
 
+since 默认根据 scope 自动选：
+- `scope=all` → 默认 `today`（今天 00:00 起）
+- `scope=mine` → 默认 `48h`（订阅集合稀疏，宽窗口提高命中率）
+
+用户显式说时间时手动指定：
+
 | 用户问 | since | 理由 |
 |---|---|---|
-| "今日爆文" / "今天有什么" | `today`（默认）| Asia/Shanghai 今天 00:00 起 |
+| "今日爆文" / "今天有什么" | `today` | Asia/Shanghai 今天 00:00 起 |
 | "昨天的爆文" / "昨天爆文" | `yesterday` | 昨天 00:00 起到现在（含今天）|
 | "过去 24 小时" / "近一天" | `24h` | 滚动窗口 |
+| "过去 48 小时" / "近两天" | `48h` | 滚动窗口 |
 | "近 7 天" / "本周" | `7d` | 滚动窗口 |
 
 ## 何时用哪种 sort

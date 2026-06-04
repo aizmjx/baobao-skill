@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # 默认 scope=all（看全量爆文 TOP）；--scope mine 走个人订阅过滤
-# 默认 since=today（Asia/Shanghai 今天 00:00 起到现在）
+# since 默认根据 scope 自动选：scope=all → today / scope=mine → 48h（订阅集合稀疏，要宽窗口）
 # 默认 sort=published（按发布时间倒序，最新的在前）；--sort heat 按热度
-SCOPE="all"; SINCE="today"; CATEGORY=""; SORT="published"; LIMIT="20"
+SCOPE="all"; SINCE=""; CATEGORY=""; SORT="published"; LIMIT="20"
 while [ $# -gt 0 ]; do
   case "$1" in
     --scope) SCOPE="$2"; shift 2 ;;
@@ -19,6 +19,11 @@ done
 
 API_KEY="${BAOWEN_API_KEY:?BAOWEN_API_KEY env var required (baowen /settings 页一键生成的 bw_xxx token)}"
 BASE_URL="${BAOWEN_BASE_URL:-https://fd.aiawaken.top}"
+
+# scope-aware default since（用户没显式 --since 时）
+if [ -z "$SINCE" ]; then
+  if [ "$SCOPE" = "mine" ]; then SINCE="48h"; else SINCE="today"; fi
+fi
 
 QS="scope=$SCOPE&since=$SINCE&sort=$SORT&limit=$LIMIT"
 [ -n "$CATEGORY" ] && QS="$QS&category=$CATEGORY"
