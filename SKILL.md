@@ -34,7 +34,8 @@ markdown bullet list，每条：
 ```
 1. **标题** · 来源 · 公众号名 · 热度 · 分类
    - tags: ...
-   - https://原文链接
+   - 原文: https://原文链接（toutiao.com / mp.weixin.qq.com 等）
+   - 详情: https://fd.aiawaken.top/posts/<id>（baowen 站内详情，含热度趋势/完整正文）
    - 发布时间
 ```
 
