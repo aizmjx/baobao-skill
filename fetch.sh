@@ -3,7 +3,8 @@ set -euo pipefail
 
 # 默认 scope=all（看全量爆文 TOP）；--scope mine 走个人订阅过滤
 # 默认 since=today（Asia/Shanghai 今天 00:00 起到现在）
-SCOPE="all"; SINCE="today"; CATEGORY=""; SORT="heat"; LIMIT="20"
+# 默认 sort=published（按发布时间倒序，最新的在前）；--sort heat 按热度
+SCOPE="all"; SINCE="today"; CATEGORY=""; SORT="published"; LIMIT="20"
 while [ $# -gt 0 ]; do
   case "$1" in
     --scope) SCOPE="$2"; shift 2 ;;
