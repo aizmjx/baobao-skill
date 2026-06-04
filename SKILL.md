@@ -52,14 +52,18 @@ since 默认根据 scope 自动选：
 
 ## 输出格式
 
-markdown bullet list，每条：
+markdown 表格，每行一条文章；标题做成 markdown link，点击直接跳原文：
 
 ```
-1. **标题** · 来源 · 公众号名 · 热度 · 分类
-   - tags: ...
-   - https://原文链接
-   - 发布时间
+## baowen 全量爆文 · since=today · 共 5 条
+
+| # | 标题 | 来源 | 公众号 | 热度 | 分类 | 标签 | 时间 |
+|---|------|------|--------|------|------|------|------|
+| 1 | [ChatGPT 与 Codex 合并](https://mp.weixin.qq.com/...) | 公众号 | 机器之心 | 100000 | AI | AI,产品 | 06-04 18:21 |
+| 2 | [千问向 Agent 开放](https://mp.weixin.qq.com/...) | 公众号 | 千问APP | 14100 | AI | AI | 06-04 16:08 |
 ```
+
+URL 不单独占行（避免被截断），time 是 Asia/Shanghai 紧凑格式 `MM-DD HH:mm`。
 
 ## 不要做
 

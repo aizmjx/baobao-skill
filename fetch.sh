@@ -31,6 +31,13 @@ QS="scope=$SCOPE&since=$SINCE&sort=$SORT&limit=$LIMIT"
 response=$(curl -fsSL -H "Authorization: Bearer $API_KEY" "$BASE_URL/api/me/feed?$QS")
 
 echo "$response" | jq -r '
+  # markdown 表格 cell 转义：| 替换成 \|，去掉换行
+  def esc_cell:
+    if . == null then "—"
+    elseif type == "string" then
+      gsub("\\|"; "\\\\|") | gsub("\n"; " ")
+    else . end;
+
   if (.data | length) == 0 then
     if (.meta.reason // "") == "no-subscriptions" then
       "（你还没有在 baowen 订阅任何赛道。去 https://fd.aiawaken.top/subscriptions 选几个再试，或者直接用全量模式：去掉 --scope mine 即可。）"
@@ -39,14 +46,22 @@ echo "$response" | jq -r '
     end
   else
     [
-      "## baowen \(if .meta.scope == "mine" then "订阅" else "全量" end)爆文 · since=\(.meta.since) · 共 \(.meta.total) 条\n"
+      "## baowen \(if .meta.scope == "mine" then "订阅" else "全量" end)爆文 · since=\(.meta.since) · 共 \(.meta.total) 条",
+      "",
+      "| # | 标题 | 来源 | 公众号 | 热度 | 分类 | 标签 | 时间 |",
+      "|---|------|------|--------|------|------|------|------|"
     ] + [
       .data | to_entries[] | (
-        "\(.key + 1). **\(.value.title)** · \(.value.source) · \(.value.author // "—") · 热度 \(.value.heat) · \(.value.category // "—")\n"
-        + (if (.value.tags | length) > 0 then "   - tags: \(.value.tags | join(", "))\n" else "" end)
-        + "   - \(.value.contentUrl)\n"
-        + "   - \(.value.publishedAt)"
+        "| \(.key + 1)"
+        + " | [\(.value.title | esc_cell)](\(.value.contentUrl))"
+        + " | \(.value.source | esc_cell)"
+        + " | \(.value.author | esc_cell)"
+        + " | \(.value.heat)"
+        + " | \(.value.category | esc_cell)"
+        + " | \(if (.value.tags | length) > 0 then (.value.tags | join(",") | esc_cell) else "—" end)"
+        + " | \(.value.publishedAtCN // .value.publishedAt | esc_cell)"
+        + " |"
       )
-    ] | join("\n\n")
+    ] | join("\n")
   end
 '
