@@ -1,6 +1,6 @@
 ---
 name: baowen-feed
-description: 拉取 baowen 爆文系统的文章列表。默认走「全量爆文 TOP」模式（不限赛道，看全站最热）——当用户问「今日爆文 / 今天有什么爆文 / 拿一下爆文」等时触发。当用户明确说「我的订阅 / 我订阅了什么 / 按标签过滤」时加 `--scope mine` 走订阅过滤。可选参数：since（默认 24h，可 7d / 30d / all），category（限定单赛道，wx 拼音码如 keji / yuer / chuangye），sort（默认 heat 按热度，可改 published），limit（默认 20，最大 50），scope（默认 all，可改 mine 走订阅过滤）。
+description: 拉取 baowen 爆文系统的文章列表。默认走「全量爆文 TOP」模式（不限赛道，看全站最热）——当用户问「今日爆文 / 今天有什么爆文 / 拿一下爆文」等时触发。当用户明确说「我的订阅 / 我订阅了什么 / 按标签过滤」时加 `--scope mine` 走订阅过滤；当用户说「昨天的爆文」时加 `--since yesterday`。可选参数：since（默认 today = Asia/Shanghai 今天 00:00 起；可改 yesterday = 昨天 00:00 起 / 24h = 滚动 24 小时 / 7d / 30d / all），category（限定单赛道，wx 拼音码如 keji / yuer / chuangye），sort（默认 heat 按热度，可改 published），limit（默认 20，最大 50），scope（默认 all，可改 mine 走订阅过滤）。
 ---
 
 调 baowen API 拿爆文列表，markdown 输出给 AI 阅读 / 总结 / 二次加工。
@@ -26,6 +26,15 @@ bash ~/.claude/skills/baowen-feed/fetch.sh --scope mine [其他参数]
 |---|---|---|
 | "今日爆文" / "今天有什么爆文" / "拿一下爆文" / "热门文章" | `all`（默认）| 用户想看全站 TOP，不只是自己订阅的 |
 | "我的订阅" / "我订阅了什么" / "我关注的话题今天有啥" | `mine` | 明确要订阅过滤 |
+
+## 何时用哪种 since
+
+| 用户问 | since | 理由 |
+|---|---|---|
+| "今日爆文" / "今天有什么" | `today`（默认）| Asia/Shanghai 今天 00:00 起 |
+| "昨天的爆文" / "昨天爆文" | `yesterday` | 昨天 00:00 起到现在（含今天）|
+| "过去 24 小时" / "近一天" | `24h` | 滚动窗口 |
+| "近 7 天" / "本周" | `7d` | 滚动窗口 |
 
 ## 输出格式
 
