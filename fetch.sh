@@ -37,8 +37,7 @@ echo "$response" | jq -r '
       .data | to_entries[] | (
         "\(.key + 1). **\(.value.title)** · \(.value.source) · \(.value.author // "—") · 热度 \(.value.heat) · \(.value.category // "—")\n"
         + (if (.value.tags | length) > 0 then "   - tags: \(.value.tags | join(", "))\n" else "" end)
-        + "   - 原文: \(.value.contentUrl)\n"
-        + "   - 详情: \(.value.detailUrl)\n"
+        + "   - \(.value.contentUrl)\n"
         + "   - \(.value.publishedAt)"
       )
     ] | join("\n\n")
